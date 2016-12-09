@@ -1,0 +1,12 @@
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  post summit
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  upload summit mediawiki-1.28.0.tgz
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  list
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  stat summit
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  stat summit mediawiki-1.28.0.tgz
+$ swift -A http://cloud.lab.fiware.org:4730/v2.0  download summit mediawiki-1.28.0.tgz
+
+SNAPSHOT
+=========
+nova stop krtmysql
+nova image-create krtmysql krtmysql-snp
+openstack image show krtmysql-snp

@@ -1,0 +1,7 @@
+NETUUID=$(openstack network list | awk '/ node-int-net-01 / {print $2}')
+nova boot --nic net-id=$NETUUID --image base_ubuntu_14.04 --key-name summitkp --security-groups allopen --flavor m1.small mydatabase
+
+PUBLIC_EXT_NET=public-ext-net-01
+openstack floating ip create $PUBLIC_EXT_NET
+
+nova floating-ip-associate ...

@@ -1,0 +1,27 @@
+token=($(openstack token issue | awk '/ id / || / project_id / {print $4}'))
+TOKEN=${token[0]}
+TENANT_ID=${token[1]}
+MYSQL_IP=$(nova show krtmysql | awk '/node-int-net-01 network/ { print $5}' )
+
+# ------------------------ APACHE_CONFIG_FILE GENERATION.....
+cat << EOT > $APACHE_CONFIG_FILE
+#!/bin/bash
+
+apt-get update && apt-get -y install python-swiftclient apache2 mysql-client php5-mysql php5 libapache2-mod-php5 php5-mcrypt php5-gd imagemagick php5-apcu python-pygments apache2-mpm-prefork php5-readline php5-json php5-cli
+apt-get -y clean
+
+cd /tmp ; swift --os-auth-token $TOKEN --os-storage-url=$URL/AUTH_$TENANT_ID download summit wiki.tgz
+WDIR=\$(tar ztvf ./wiki.tgz  | head -1 | awk '{print \$6}')
+ln -s /var/www/html/\${WDIR} /var/www/html/wiki
+cd /var/www/html ; tar zxvf /tmp/wiki.tgz
+THIS_IP=\$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+DBIP=$MYSQL_IP
+sed -i "s/^\\\$wgDBserver.*/\\\$wgDBserver         = \\"\$DBIP\\";/g" /var/www/html/wiki/LocalSettings.php
+sed -i "s/^\\\$wgServer.*/\\\$wgServer         = \\"\$THIS_IP\\";/g" /var/www/html/wiki/LocalSettings.php
+sed -i "s/^\\\$wgEmergencyContact.*/\\\$wgEmergencyContact         = \\"apache@\$THIS_IP\\";/g" /var/www/html/wiki/LocalSettings.php
+sed -i "s/^\\\$wgPasswordSender.*/\\\$wgPasswordSender         = \\"apache@\$THIS_IP\\";/g" /var/www/html/wiki/LocalSettings.php
+
+
+service apache2 restart
+EOT
+# ------------------------ END OF APACHE_CONFIG_FILE GENERATION.....

@@ -1,0 +1,9 @@
+export OS_USERNAME=whoeveryouare@whereveryou.are
+echo Password:
+read -s OS_PASSWORD
+export OS_PASSWORD
+export OS_AUTH_URL=http://cloud.lab.fiware.org:4730/v2.0
+
+# These 2 can be seen in Cloud Portal -> (info)
+export OS_TENANT_NAME="your tenant name"
+export OS_REGION_NAME="your region"

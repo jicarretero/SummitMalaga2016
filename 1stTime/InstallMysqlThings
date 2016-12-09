@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Formats the disk for MySQL data and update it.
+mkfs -t ext4 /dev/vdb
+
+mkdir -p /var/lib/mysql
+echo "/dev/vdb /var/lib/mysql ext4 defaults 0 0" >> /etc/fstab
+
+mount /var/lib/mysql
+
+### I setup a new password for the root user of MySQL (This is a really bad password 
+### that shouldn't be set this way -- Anyway, this is just a demo)
+ROOT_PASSWORD=root
+
+### Configuration for the package manager -- When it asks for MySQL Password and confirmation:
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $ROOT_PASSWORD"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $ROOT_PASSWORD"
+
+# Update and installation of mysql-server, mysql-client
+apt-get update
+apt-get install -y mysql-server
+apt-get -y clean
+
+# I update my.cnf in order to listen every network interface (eth0) and not only localhost
+sed -i 's/^bind-address.*/bind-address            = 0.0.0.0/g' /etc/mysql/my.cnf
+
+# Restart mysql service
+service mysql restart
+
+mysql -u root -proot -e "create database wiki;"
+mysql -u root -proot -e "grant all on wiki.* to 'wiki'@'%' identified by 'wiki'; flush privileges;"
+
