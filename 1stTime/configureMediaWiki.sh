@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-KEY=summitkp
+KEY=../../summitkp
 
 IP=$(nova show krtapache | gawk '/ 130.206./ {print gensub(/.* (130\.206\.[0-9]+\.[0-9]+).*/,"\\1","g",$0)}')
 [ ! -z "$IP" ]
