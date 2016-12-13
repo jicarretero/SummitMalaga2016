@@ -3,10 +3,18 @@
 # Prepare disk for MediaWiki data (it formats the disk)
 mkfs -t ext4 /dev/vdb
 
+
 # Update and installation of mysql-server, nova-client and keystone-client packages.
 apt-get update
 apt-get install -y python-swiftclient apache2 mysql-client php5-mysql php5 libapache2-mod-php5 php5-mcrypt php5-gd imagemagick php5-apcu python-pygments apache2-mpm-prefork php5-readline php5-json php5-cli
 apt-get -y clean
 
+(cd /var/www/html ; curl -L https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.28.0.tar.gz | tar zxf  - ; ln -s mediawiki-1.28.0 wiki)
+
+(curl -L https://extdist.wmflabs.org/dist/extensions/SyntaxHighlight_GeSHi-REL1_28-65073ad.tar.gz | tar -zxf - -C /var/www/html/wiki/extensions)
+
 # Prepare the disk!
 echo "/dev/vdb /var/www/html/wiki/images ext4 defaults 0 0" >> /etc/fstab
+mount /var/www/html/wiki/images
+
+chown -R www-data.www-data  /var/www/html/mediawiki-1.28.0
