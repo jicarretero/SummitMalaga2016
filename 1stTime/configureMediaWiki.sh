@@ -5,7 +5,7 @@ KEY=../../summitkp
 IP=$(nova show krtapache | gawk '/ 130.206./ {print gensub(/.* (130\.206\.[0-9]+\.[0-9]+).*/,"\\1","g",$0)}')
 [ ! -z "$IP" ]
 
-sed -i orig 's|^$wgLogo .*=.*|$wgLogo = "/wiki/Logo/logo.jpg";|g' LocalSettings.php
+sed -i orig 's|^$wgLogo .*=.*|$wgLogo = "/wiki/Logo/logo.jpg";|g' LocalSettings.php | sed 's|^$wgLogo .*=.*|$wgLogo = "/wiki/Logo/logo.jpg";|g' LocalSettings.php
 
 cat << EOT >> LocalSettings.php
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
