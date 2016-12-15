@@ -36,7 +36,7 @@ $wgResourceBasePath = $wgScriptPath;
 
 ## The URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgResourceBasePath/resources/assets/wiki.png";
+$wgLogo = "/wiki/Logo/logo.jpg";
 
 ## UPO means: this is also a user preference option
 
@@ -131,4 +131,19 @@ wfLoadSkin( 'Vector' );
 
 # End of automatically generated settings.
 # Add more configuration options below.
+
+wfLoadExtension( 'SyntaxHighlight_GeSHi' );
+
+$wgPygmentizePath = "/usr/bin/pygmentize";
+
+$wgFileExtensions[]='pdf';
+$wgFileExtensions = array_merge( $wgFileExtensions,
+     array( 'doc', 'xls', 'mpp', 'ppt', 'xlsx', 'jpg', 'pdf',
+    'tiff', 'odt', 'odg', 'ods', 'odp', 'gz', 'bz2', 'zip', 'eml'
+  )
+                 );
+$wgVerifyMimeType = false;
+$wgStrictFileExtensions = false;
+$wgCheckFileExtensions = false;
+$wgAllowJavaUploads = true;
 
